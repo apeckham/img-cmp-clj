@@ -1,20 +1,29 @@
 (ns img-cmp-clj.core
+  (:require [me.raynes.conch :refer [with-programs]])
   (:gen-class))
 
-(programs identify compare)
+(defn compare-files
+  [expected actual diff]
+  (let [comparison (with-programs [compare]
+                                  (compare "-metric" "AE" expected actual diff {:throw false :verbose true}))
+        exit-code (-> comparison :exit-code deref)]
+    {:match (= 0 exit-code)
+     :message (-> comparison :proc :err first)}))
 
-(defn size
-  (re-find #"(\d+)x(\d+)" (identify "expected/mug-3.png")))
+(defn change-prefix
+  [expected prefix]
+  (clojure.string/replace expected "expected/" prefix))
 
-(-> (with-programs [compare] (compare "-metric" "AE" "expected/mug-1.png" "actual/mug-1.png" "x.png" {:throw false :verbose true})) :exit-code deref)
-(with-programs [compare] (compare "-metric" "AE" "expected/mug-2.png" "actual/mug-2.png" "x.png" {:throw false :verbose true}))
-(Integer/parseInt (first (:err (:proc (with-programs [compare] (compare "-metric" "AE" "expected/mug-3.png" "actual/mug-3.png" "x.png" {:throw false :verbose true}))))))
-
-(pprint (file-seq (clojure.java.io/file ".")))
-
-(subs (.getPath (first (filter #(.isFile %) (file-seq (clojure.java.io/file "././././actual"))))) (count "././././actual"))
+(defn expected-seq
+  []
+  (->> (clojure.java.io/file "expected")
+       file-seq
+       (filter #(.isFile %))
+       (map str)
+       (map #(hash-map :expected %
+                       :diff (change-prefix % "diff/")
+                       :actual (change-prefix % "actual/")))))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
   (println "Hello, World!"))
