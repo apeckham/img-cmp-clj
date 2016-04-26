@@ -27,7 +27,9 @@
 
 (defn compare-all
   []
-  (map #(merge % (compare-files %)) (expected-seq)))
+  (->> (expected-seq)
+       (pmap #(merge % (compare-files %)))
+       (sort-by :match)))
 
 (defn render-item
   [item]
