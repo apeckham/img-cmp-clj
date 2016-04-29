@@ -28,12 +28,20 @@
                  2 :error)
      :message  (-> comparison :proc :err first)}))
 
+(defn is-image
+  [path]
+  (-> path
+      (clojure.string/split #"\.")
+      last
+      clojure.string/lower-case
+      #{"png" "jpg"}))
+
 (defn expected-files
   []
   (->> (clojure.java.io/file "expected")
        file-seq
-       (filter #(.isFile %))
-       (map str)))
+       (map str)
+       (filter is-image)))
 
 (defn compare-all
   []
@@ -48,23 +56,23 @@
      [:img.img-responsive {:src src}]]
     [:img.img-responsive {:src "missing.png"}]))
 
-(defn render-item
-  [item]
+(defn render-result
+  [result]
   [:div
-   [:h1 (change-prefix (:expected item) "") ": " (:result item)]
-   [:p [:code (:message item)]]
+   [:h1 (change-prefix (:expected result) "") ": " (:result result)]
+   [:p [:code (:message result)]]
    [:div.diff
     [:div
-     (img (:expected item))
-     [:div (-> item :expected image-size)]]
+     (img (:expected result))
+     [:div (-> result :expected image-size)]]
     [:div
-     (img (:actual item))
-     [:div (-> item :actual image-size)]]
+     (img (:actual result))
+     [:div (-> result :actual image-size)]]
     [:div
-     (img (:diff item))]]])
+     (img (:diff result))]]])
 
 (defn render
-  [items]
+  [results]
   (html5
     [:head
      (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
@@ -80,7 +88,7 @@
         }
       "]]
     [:div.container-fluid
-     (map render-item items)]))
+     (map render-result results)]))
 
 (defn write
   [results]
