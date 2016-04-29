@@ -42,7 +42,10 @@
 
 (defn img
   [src]
-  [:img.img-responsive {:src (if (.exists (clojure.java.io/as-file src)) src "missing.png")}])
+  (if (.exists (clojure.java.io/as-file src))
+    [:a {:href src}
+     [:img.img-responsive {:src src}]]
+    [:img.img-responsive {:src "missing.png"}]))
 
 (defn render-item
   [item]
@@ -71,7 +74,6 @@
   (html5
     [:head
      (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
-     (include-js "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
      [:style "
         .diff {
           display: flex;
