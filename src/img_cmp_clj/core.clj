@@ -8,11 +8,16 @@
   (with-programs [identify] (re-find #"\d+x\d+" (identify path {:throw false}))))
 
 (defn compare-files
-  [{:keys [expected actual diff]}]
-  (let [comparison (with-programs [compare]
+  [expected]
+  (let [diff (change-prefix expected "diff/")
+        actual (change-prefix expected "actual/")
+        comparison (with-programs [compare]
                                   (compare "-metric" "AE" expected actual diff {:throw false :verbose true}))
         exit-code (-> comparison :exit-code deref)]
-    {:match         (= 0 exit-code)
+    {:expected      expected
+     :actual        actual
+     :diff          diff
+     :match         (= 0 exit-code)
      :expected-size (image-size expected)
      :actual-size   (image-size actual)
      :message       (-> comparison :proc :err first)}))
@@ -26,15 +31,12 @@
   (->> (clojure.java.io/file "expected")
        file-seq
        (filter #(.isFile %))
-       (map str)
-       (map #(hash-map :expected %
-                       :diff (change-prefix % "diff/")
-                       :actual (change-prefix % "actual/")))))
+       (map str)))
 
 (defn compare-all
   []
   (->> (expected-seq)
-       (pmap #(merge % (compare-files %)))
+       (pmap compare-files)
        (sort-by :match)))
 
 (defn render-item
