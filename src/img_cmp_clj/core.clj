@@ -19,13 +19,14 @@
         comparison (with-programs [compare]
                                   (compare "-metric" "AE" expected actual diff {:throw false :verbose true}))
         exit-code (-> comparison :exit-code deref)]
-    {:expected      expected
-     :actual        actual
-     :diff          diff
-     :result        (case exit-code 0 :similar 1 :dissimilar 2 :error)
-     :expected-size (image-size expected)
-     :actual-size   (image-size actual)
-     :message       (-> comparison :proc :err first)}))
+    {:expected expected
+     :actual   actual
+     :diff     diff
+     :result   (case exit-code
+                 0 :similar
+                 1 :dissimilar
+                 2 :error)
+     :message  (-> comparison :proc :err first)}))
 
 (defn expected-files
   []
@@ -50,22 +51,15 @@
 (defn render-item
   [item]
   [:div
-   [:h1
-    (change-prefix (:expected item) "")
-    ": "
-    (:result item)]
-   [:p
-    [:code
-     (:message item)]]
+   [:h1 (change-prefix (:expected item) "") ": " (:result item)]
+   [:p [:code (:message item)]]
    [:div.diff
     [:div
      (img (:expected item))
-     [:div.size
-      (:expected-size item)]]
+     [:div (-> item :expected image-size)]]
     [:div
      (img (:actual item))
-     [:div.size
-      (:actual-size item)]]
+     [:div (-> item :actual image-size)]]
     [:div
      (img (:diff item))]]])
 
@@ -82,8 +76,6 @@
         .diff > div {
           width: 33%;
           text-align: center;
-        }
-        .size {
           color: lightgrey;
         }
       "]]
