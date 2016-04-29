@@ -5,7 +5,12 @@
 
 (defn image-size
   [path]
-  (with-programs [identify] (re-find #"\d+x\d+" (identify path {:throw false}))))
+  (with-programs [identify]
+                 (re-find #"\d+x\d+" (identify path {:throw false}))))
+
+(defn change-prefix
+  [expected prefix]
+  (clojure.string/replace expected "expected/" prefix))
 
 (defn compare-files
   [expected]
@@ -22,10 +27,6 @@
      :actual-size   (image-size actual)
      :message       (-> comparison :proc :err first)}))
 
-(defn change-prefix
-  [expected prefix]
-  (clojure.string/replace expected "expected/" prefix))
-
 (defn expected-seq
   []
   (->> (clojure.java.io/file "expected")
@@ -38,6 +39,10 @@
   (->> (expected-seq)
        (pmap compare-files)
        (sort-by :match)))
+
+(defn img
+  [src]
+  [:img.img-responsive {:src (if (.exists (clojure.java.io/as-file src)) src "missing.png")}])
 
 (defn render-item
   [item]
@@ -52,15 +57,15 @@
    [:table.table
     [:tr
      [:td.text-center
-      [:img.img-responsive {:src (:expected item)}]
+      (img (:expected item))
       [:div.size
        (:expected-size item)]]
      [:td.text-center
-      [:img.img-responsive {:src (:actual item)}]
+      (img (:actual item))
       [:div.size
        (:actual-size item)]]
      [:td.text-center
-      [:img.img-responsive {:src (:diff item)}]]]]])
+      (img (:diff item))]]]])
 
 (defn render
   [items]
