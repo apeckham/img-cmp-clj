@@ -8,5 +8,6 @@
                  [org.clojure/tools.cli "0.3.3"]
                  [hiccup "1.0.5"]]
   :main ^:skip-aot img-cmp-clj.core
+  :uberjar-name "img-cmp-clj-standalone.jar"
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

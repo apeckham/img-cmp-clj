@@ -3,6 +3,8 @@
             [hiccup.page :refer [html5 include-css include-js]])
   (:gen-class))
 
+(def missing-png "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgAQMAAAAuTTzDAAAABlBMVEXs7Oz///+10pB6AAADh0lEQVR4AYzQy5HcRhgGwc+TMWVNWxPGLBgCC3DbF1k6UlIGA9PHP6pfubdu188e99HHnvfRteM+OnfeR8eu++i5j/vosZ/3u+b3234DBdP7AgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVNLKFTGSKbWX6E+MnrKZHTIZHTKZHTJZPQBExFQ/zbZv4YwEQH1EZFQl5FQp5FQh5FQTyOhHkRC/Vtk/x7DZNRDJqOnTEaHTEanTEaXTEYff2Fq/lqP6afsvMKr52P9xPy2HBNQ2AUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMHUAgqmFlAwtYCCqQUUTC2gYGoBBVMLKJhaQMFE9JTJ6JDJ6JTJ6JLJ6EOmWkDB1AIKphZQMBk9ZTI6ZDI6ZTK6ZDL6kKkFFEwtoGBqAQVTC6jrheg4X4jO44XogqkFFEwtoGB6PXr9Oh/+DyN2TAAACMNA0L+yCqmRCPjldqYH2uQdgcPka8kF+1PxR+fP1z9Cv5R/Tv/mPjB89HSI+Tj0weojupgKytdGF5CvMl+Kvl6LqaB85Tc8eAzxQOPRKJgKyuOaBz+PkJfTHms9IHvUbmj3+O9FIpgCSstNMBUUFq5gCigtgcVUUFhMveIW4Hvt9gLvKsClQvWEiw5XJi5fXONUCLFacknlusvFWRUcyTzTgiQYSVWS9HR96iK2mALF5HAxBRQK62IKKJTowRRQKvbXqB0LAAAAAAjztw5gTwp7SyahXmyQSagXQGQS6kUZmYR6oUgmoV68kkmoF9RkEupFPpmEeuFRJqFeDJVJqBdoZRLqRWOZhHohWyahXlyXSagX/GEC6k4IMAF1xwiYgLqzBkxA3YEEJqDu1AITUHe0gQmoO//AJNQckmASak5SMAk1xy2YhJozmUxCvcFNJqHedCeTUG8ElEmoNyfKJNQbJmUSKoZVhKZF1BisAAAAAElFTkSuQmCC")
+
 (defn image-size
   [path]
   (with-programs [identify]
@@ -54,7 +56,7 @@
   (if (.exists (clojure.java.io/as-file src))
     [:a {:href src}
      [:img.img-responsive {:src src}]]
-    [:img.img-responsive {:src "missing.png"}]))
+    [:img.img-responsive {:src missing-png}]))
 
 (defn render-result
   [result]
