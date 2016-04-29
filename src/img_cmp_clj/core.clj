@@ -54,18 +54,17 @@
    [:p
     [:code
      (:message item)]]
-   [:table.table
-    [:tr
-     [:td.text-center
-      (img (:expected item))
-      [:div.size
-       (:expected-size item)]]
-     [:td.text-center
-      (img (:actual item))
-      [:div.size
-       (:actual-size item)]]
-     [:td.text-center
-      (img (:diff item))]]]])
+   [:div.diff
+    [:div
+     (img (:expected item))
+     [:div.size
+      (:expected-size item)]]
+    [:div
+     (img (:actual item))
+     [:div.size
+      (:actual-size item)]]
+    [:div
+     (img (:diff item))]]])
 
 (defn render
   [items]
@@ -74,8 +73,13 @@
      (include-css "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
      (include-js "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
      [:style "
-        td {
+        .diff {
+          display: flex;
+          align-items: center;
+        }
+        .diff > div {
           width: 33%;
+          text-align: center;
         }
         .size {
           color: lightgrey;
