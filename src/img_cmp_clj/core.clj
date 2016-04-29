@@ -27,7 +27,7 @@
      :actual-size   (image-size actual)
      :message       (-> comparison :proc :err first)}))
 
-(defn expected-seq
+(defn expected-files
   []
   (->> (clojure.java.io/file "expected")
        file-seq
@@ -36,7 +36,7 @@
 
 (defn compare-all
   []
-  (->> (expected-seq)
+  (->> (expected-files)
        (pmap compare-files)
        (sort-by :result)))
 
@@ -90,6 +90,13 @@
     [:div.container-fluid
      (map render-item items)]))
 
+(defn write
+  [results]
+  (->> results render (spit "out.html")))
+
 (defn -main
   [& args]
-  (->> (compare-all) render (spit "out.html")))
+  (let [results (compare-all)
+        similar (every? #(= :similar %) (map :result results))]
+    (write results)
+    (System/exit (if similar 0 1))))

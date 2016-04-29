@@ -8,6 +8,6 @@ Compares images from "actual" and "expected" directories, and creates an image g
 
 ```
 lein repl
-(use 'img-cmp-clj.core :reload) (-main)
+(use 'img-cmp-clj.core :reload) (write (compare-all))
 open out.html
 ```
