@@ -17,3 +17,4 @@ open out.html
 - Print what's happening
 - Better error when diff directory is missing
 - Take input directories as flags
+- Take out.html path as a flag
