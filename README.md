@@ -11,3 +11,9 @@ lein repl
 (use 'img-cmp-clj.core :reload) (write (compare-all))
 open out.html
 ```
+
+## Todo
+
+- Print what's happening
+- Better error when diff directory is missing
+- Take input directories as flags
