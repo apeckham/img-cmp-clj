@@ -51,10 +51,12 @@
     [:tr
      [:td.text-center
       [:img.img-responsive {:src (:expected item)}]
-      [:div.size (:expected-size item)]]
+      [:div.size
+       (:expected-size item)]]
      [:td.text-center
       [:img.img-responsive {:src (:actual item)}]
-      [:div.size (:actual-size item)]]
+      [:div.size
+       (:actual-size item)]]
      [:td.text-center
       [:img.img-responsive {:src (:diff item)}]]]]])
 
@@ -72,7 +74,8 @@
           color: lightgrey;
         }
       "]]
-    [:div.container (map render-item items)]))
+    [:div.container-fluid
+     (map render-item items)]))
 
 (defn -main
   [& args]
