@@ -9,8 +9,8 @@
                  (re-find #"\d+x\d+" (identify path {:throw false}))))
 
 (defn change-prefix
-  [expected prefix]
-  (clojure.string/replace expected "expected/" prefix))
+  [path prefix]
+  (clojure.string/replace path "expected/" prefix))
 
 (defn compare-files
   [expected]
@@ -22,7 +22,7 @@
     {:expected      expected
      :actual        actual
      :diff          diff
-     :match         (= 0 exit-code)
+     :result        (case exit-code 0 :similar 1 :dissimilar 2 :error)
      :expected-size (image-size expected)
      :actual-size   (image-size actual)
      :message       (-> comparison :proc :err first)}))
@@ -38,7 +38,7 @@
   []
   (->> (expected-seq)
        (pmap compare-files)
-       (sort-by :match)))
+       (sort-by :result)))
 
 (defn img
   [src]
@@ -48,9 +48,9 @@
   [item]
   [:div
    [:h1
-    (:expected item)
+    (change-prefix (:expected item) "")
     ": "
-    (if (:match item) "Matched" "Did not match")]
+    (:result item)]
    [:p
     [:code
      (:message item)]]
